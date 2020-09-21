@@ -105,7 +105,7 @@ class MQTTClientWrapper {
     print(
         'MQTTClientWrapper::Publishing message $message to topic ${Constants.topicName}');
     client.publishMessage(
-        Constants.topicName, MqttQos.exactlyOnce, builder.payload, true);
+        Constants.topicName, MqttQos.exactlyOnce, builder.payload);
   }
 
   void _onSubscribed(String topic) {
