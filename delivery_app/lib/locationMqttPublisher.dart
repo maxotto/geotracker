@@ -59,7 +59,7 @@ class LocationMqttPublisher {
   }
 
   void publish(Geolocator.Position position) {
-    final message = jsonEncode(position);
+    final String message = jsonEncode(position);
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(message);
 
@@ -68,7 +68,7 @@ class LocationMqttPublisher {
   }
 
   void _setupMqttClient() {
-    client = MqttServerClient.withPort(
+    MqttServerClient client = MqttServerClient.withPort(
       this.serverUri,
       this.clientId,
       this.serverPort,
