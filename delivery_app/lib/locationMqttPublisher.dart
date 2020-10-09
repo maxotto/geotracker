@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:delivery_app/models.dart';
 import 'package:geolocator/geolocator.dart' as Geolocator;
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -16,10 +15,10 @@ class LocationMqttPublisher {
   bool isWaitingForConnection = false;
 
   MqttServerClient client;
-  MqttCurrentConnectionState connectionState = MqttCurrentConnectionState.IDLE;
 
   LocationMqttPublisher(this.serverUri, this.serverPort, this.clientId,
       this.topic, this.onLocationChanged) {
+    this._setupMqttClient();
     StreamSubscription<Geolocator.Position> positionStream =
         Geolocator.getPositionStream(
                 desiredAccuracy: Geolocator.LocationAccuracy.high)
@@ -29,8 +28,6 @@ class LocationMqttPublisher {
         publish(position);
       }
     });
-
-    this._setupMqttClient();
   }
 
   Future<bool> ensureConnected() async {
@@ -38,22 +35,20 @@ class LocationMqttPublisher {
       return false;
     }
     this.isWaitingForConnection = true;
-    while (client.connectionStatus.state != MqttConnectionState.connected) {
+    while (
+        this.client.connectionStatus.state != MqttConnectionState.connected) {
       try {
         print('MQTTClientWrapper::Mosquitto client connecting....');
-        connectionState = MqttCurrentConnectionState.CONNECTING;
         await client.connect();
         print('MQTTClientWrapper::Mosquitto client connected');
       } on Exception catch (e) {
         print('MQTTClientWrapper::client exception - $e');
-        connectionState = MqttCurrentConnectionState.ERROR_WHEN_CONNECTING;
         print(
-            'MQTTClientWrapper::ERROR Mosquitto client connection failed - disconnecting, status is ${client.connectionStatus}');
-        client.disconnect();
+            'MQTTClientWrapper::ERROR Mosquitto client connection failed - disconnecting, status is ${this.client.connectionStatus}');
+        this.client.disconnect();
         await Future.delayed(Duration(seconds: 10));
       }
     }
-    connectionState = MqttCurrentConnectionState.CONNECTED;
     this.isWaitingForConnection = false;
     return true;
   }
@@ -64,31 +59,31 @@ class LocationMqttPublisher {
     builder.addString(message);
 
     print('MQTTClientWrapper::Publishing message $message to topic $topic');
-    client.publishMessage(this.topic, MqttQos.exactlyOnce, builder.payload);
+    this
+        .client
+        .publishMessage(this.topic, MqttQos.exactlyOnce, builder.payload);
   }
 
   void _setupMqttClient() {
-    MqttServerClient client = MqttServerClient.withPort(
+    this.client = MqttServerClient.withPort(
       this.serverUri,
       this.clientId,
       this.serverPort,
     );
-    client.logging(on: false);
-    client.useWebSocket = true;
+    this.client.logging(on: false);
+    this.client.useWebSocket = true;
 
-    client.keepAlivePeriod = 2000;
-    client.onDisconnected = _onDisconnected;
-    client.onConnected = _onConnected;
+    this.client.keepAlivePeriod = 2000;
+    this.client.onDisconnected = _onDisconnected;
+    this.client.onConnected = _onConnected;
   }
 
   void _onDisconnected() {
     print(
         'MQTTClientWrapper::OnDisconnected client callback - Client disconnection');
-    connectionState = MqttCurrentConnectionState.DISCONNECTED;
   }
 
   void _onConnected() {
-    connectionState = MqttCurrentConnectionState.CONNECTED;
     print(
         'MQTTClientWrapper::OnConnected client callback - Client connection was sucessful');
   }
