@@ -1,10 +1,11 @@
 package com.example.background
 
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.plugins.GeneratedPluginRegistrant;
+import android.os.Bundle
+import io.flutter.app.FlutterActivity
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugins.GeneratedPluginRegistrant
 
 class MainActivity : FlutterActivity() {
-    /*
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(this)
@@ -34,6 +35,4 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
-
-     */
 }

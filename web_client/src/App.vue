@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    {{timestamp}}
     <GmapMap
       ref="mapRef"
       :center="{ lat: 54.55332, lng: 35.9772323 }"
@@ -27,12 +28,21 @@ export default {
   components: {},
   data: function () {
     return {
+      timestamp: null,
       markers: [],
       pathes: {
         Andrey: [],
       },
       path: [],
     };
+  },
+  methods: {
+    
+  },
+  watch: {
+    timestamp() {
+      // console.log(val)
+    }
   },
   computed: {
     google: gmapApi,
@@ -55,6 +65,9 @@ export default {
   },
   mounted() {
     this.$mqtt.subscribe("delivery/andrey/location");
+    setInterval(() => {
+      this.timestamp = Date.now()
+      }, 3000)
   },
 };
 </script>

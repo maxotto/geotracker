@@ -19,6 +19,7 @@ object LifecycleDetector {
         fun onFlutterActivityCreated()
 
         fun onFlutterActivityDestroyed()
+
     }
 
     private class ActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
@@ -36,8 +37,7 @@ object LifecycleDetector {
             }
         }
 
-        override fun onActivityStarted(activity: Activity) {
-        }
+        override fun onActivityStarted(activity: Activity) {}
 
         override fun onActivityStopped(activity: Activity) {}
 
@@ -47,4 +47,5 @@ object LifecycleDetector {
 
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {}
     }
+
 }

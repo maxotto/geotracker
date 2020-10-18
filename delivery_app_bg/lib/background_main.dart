@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
-
-import 'counter_service.dart';
+import 'package:flutter_background/locationService.dart';
 
 void backgroundMain() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  CounterService().startCounting();
+  LocationService();
 }
