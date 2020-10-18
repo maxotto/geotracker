@@ -1,80 +1,70 @@
-import 'package:delivery_app/locationMqttPublisher.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart' as Geolocator;
-import 'constants.dart' as Constants;
-import 'package:uuid/uuid.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_background/app_retain_widget.dart';
+import 'package:flutter_background/background_main.dart';
+import 'package:flutter_background/locationService.dart';
 
 void main() {
   runApp(MyApp());
+
+  var channel = const MethodChannel('com.example/background_service');
+  var callbackHandle = PluginUtilities.getCallbackHandle(backgroundMain);
+  channel.invokeMethod('startService', callbackHandle.toRawHandle());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Geotracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+      title: 'Location tracker',
+      home: AppRetainWidget(
+        child: MyHomePage(),
       ),
-      home: MyHomePage(title: 'Geotracker'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  LocationMqttPublisher locationPublisher;
-  Geolocator.Position position;
-
-  void init() {}
-
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   void initState() {
     super.initState();
-    var uuid = Uuid();
-    locationPublisher = new LocationMqttPublisher(
-        Constants.serverUri, Constants.port, uuid.v1(), Constants.topicName,
-        (Geolocator.Position position) {
-      setState(() {
-        this.position = position;
-      });
-    });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Location tracker'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
             Text(
               'This is your location:',
             ),
-            Text(
-              position == null
-                  ? "No data"
-                  : position.latitude.toString() +
-                      ', ' +
-                      position.longitude.toString(),
+            ValueListenableBuilder(
+              valueListenable: LocationService().position,
+              builder: (context, position, child) {
+                return Text(
+                  position == null
+                      ? "No data"
+                      : position.latitude.toString() +
+                          ', ' +
+                          position.longitude.toString(),
+                );
+              },
             ),
-          ],
-        ),
-      ),
+          ])),
     );
   }
 }

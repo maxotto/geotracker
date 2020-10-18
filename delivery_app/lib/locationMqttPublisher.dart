@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart' as Geolocator;
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -12,6 +14,10 @@ class LocationMqttPublisher {
   final String topic;
   final Function(Geolocator.Position) onLocationChanged;
 
+  ValueNotifier<Geolocator.Position> _position = ValueNotifier(null);
+
+  ValueListenable<Geolocator.Position> get position => _position;
+
   bool isWaitingForConnection = false;
 
   MqttServerClient client;
@@ -19,10 +25,11 @@ class LocationMqttPublisher {
   LocationMqttPublisher(this.serverUri, this.serverPort, this.clientId,
       this.topic, this.onLocationChanged) {
     this._setupMqttClient();
-    StreamSubscription<Geolocator.Position> positionStream =
-        Geolocator.getPositionStream(
-                desiredAccuracy: Geolocator.LocationAccuracy.high)
-            .listen((Geolocator.Position position) async {
+
+    Geolocator.getPositionStream(
+            desiredAccuracy: Geolocator.LocationAccuracy.high)
+        .listen((Geolocator.Position position) async {
+      this._position.value = position;
       this.onLocationChanged(position);
       if (await this.ensureConnected()) {
         publish(position);
