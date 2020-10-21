@@ -27,6 +27,7 @@ dependencies:
   mqtt_client: ^8.0.0
   shared_preferences: ^0.5.12
   uuid: 2.2.2
+  flutter_simple_shopify: ^0.0.23-alpha
 
 dev_dependencies:
   flutter_test:
