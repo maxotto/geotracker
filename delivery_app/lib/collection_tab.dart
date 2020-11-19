@@ -37,6 +37,7 @@ class _CollectionTabState extends State<CollectionTab> {
 
   Future<void> _fetchCollections() async {
     try {
+      print('Try to get collections list');
       ShopifyStore shopifyStore = ShopifyStore.instance;
       final collections = await shopifyStore.getAllCollections();
       if (mounted) {
@@ -101,6 +102,7 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
 
   Future<void> _fetchProductsByCollectionId() async {
     try {
+      print('Trye to get collection by ID');
       ShopifyStore shopifyStore = ShopifyStore.instance;
       final products = await shopifyStore
           .getXProductsAfterCursorWithinCollection(widget.collectionId, 4, null,

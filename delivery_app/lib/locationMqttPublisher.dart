@@ -65,7 +65,7 @@ class LocationMqttPublisher {
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(message);
 
-    print('MQTTClientWrapper::Publishing message $message to topic $topic');
+    // print('MQTTClientWrapper::Publishing message $message to topic $topic');
     this
         .client
         .publishMessage(this.topic, MqttQos.exactlyOnce, builder.payload);

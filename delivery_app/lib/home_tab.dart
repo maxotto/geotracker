@@ -46,7 +46,7 @@ class _HomeTabState extends State<HomeTab> {
     try {
       ShopifyStore shopifyStore = ShopifyStore.instance;
       final List<Product> bestSellingProducts = await shopifyStore
-          .getNProducts(2, sortKey: SortKeyProduct.BEST_SELLING);
+          .getNProducts(10, sortKey: SortKeyProduct.BEST_SELLING);
       if (mounted) {
         setState(() {
           products = bestSellingProducts;

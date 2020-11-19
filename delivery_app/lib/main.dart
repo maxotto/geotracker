@@ -7,7 +7,7 @@ import 'package:flutter_background/background_main.dart';
 import 'package:flutter_background/collection_tab.dart';
 import 'package:flutter_background/home_tab.dart';
 import 'package:flutter_background/location_tab.dart';
-import 'package:flutter_background/profile_tab.dart';
+import 'package:flutter_background/customer/profile_tab.dart';
 import 'package:flutter_background/search_tab.dart';
 import 'package:flutter_simple_shopify/flutter_simple_shopify.dart';
 
